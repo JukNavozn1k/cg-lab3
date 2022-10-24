@@ -71,7 +71,8 @@ def scale(k=1):
 def rightBtn(event):
    global coords,counter
    # P.S сделать крутой выбор
-   scale(2)  
+   print('Coords: {}'.format(coords))
+   mirrorX() 
     # сброс координат  
    coords = []
    counter = 0 
@@ -95,7 +96,7 @@ def clear(): # очистить холст
 if __name__ == "__main__":
     # Инициализация и базовая настройки окна
     root = Tk()
-    root.title('Лабораторная работа № 2 Реализация вывода сплайнов Безье')
+    root.title('Лабораторная работа № 3 Аффинные преобразования на плоскости')
     root.resizable(0, 0)
 
     # Инициализация важных переменных
