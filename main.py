@@ -1,7 +1,7 @@
 from tkinter import *
 import tkinter
 from time import sleep
-
+from math import sin,cos,radians
 # ~ Необходимые переменные
 # Необходимые переменные ~ 
  
@@ -65,14 +65,26 @@ def scale(k=1):
     m,n = coords[0][0] , coords[0][1] # точка, относительно которой происходит сжатие расстяжение k > 1 растяг < 1 сжат.
     for i in range(len(coords)-1):
            BresenhamV4(round(coords[i][0]*k - m*k + m), round(coords[i][1]*k - n*k + n), round(coords[i + 1][0]*k - m*k + m), round(coords[i + 1 ][1]*k - n*k + n)) 
-        
+def Turn(g):
+    global counter,coords
+    m,n = coords[len(coords)-1][0],coords[len(coords)-1][1]
+    g = radians(g)
+    for i in range(len(coords)-1):
+           
+           x1 = round(coords[i][0]*cos(g) - coords[i][1]*sin(g) - m*cos(g) + m + n*sin(g))
+           y1 = round(coords[i][0] * sin(g) + coords[i][1]*cos(g) - m*sin(g) - n*cos(g) + n)
+           x2 = round(coords[i+1][0]*cos(g) - coords[i+1][1]*sin(g) - m*cos(g) + m + n*sin(g))
+           y2 = round(coords[i+1][0] * sin(g) + coords[i+1][1]*cos(g) - m*sin(g) - n*cos(g) + n)
+           print([x1,y1,x2,y2]) 
+           BresenhamV4(x1,y1,x2,y2) 
+    pass        
 #  Алгоритмы отрисовки ~
 
 def rightBtn(event):
    global coords,counter
    # P.S сделать крутой выбор
    print('Coords: {}'.format(coords))
-   mirrorX() 
+   Turn(30) 
     # сброс координат  
    coords = []
    counter = 0 
