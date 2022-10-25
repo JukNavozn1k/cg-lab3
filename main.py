@@ -41,13 +41,23 @@ def BresenhamV4(x1,y1,x2,y2): # четырёхсвязная развёртка
             else: y = y + s2
             e = e - 2*dx
     draw_dot(x,y)
-# сдвиг прямоугольника на n пикселей по горизонтали и y по вертикали
-def shift(x,y):
-    global counter,coords
-    m , n = x - coords[len(coords)-1][0] , y - coords[len(coords)-1][1]
-    print('m = {} n = {}'.format(m,n))
+def drawPolygon():
+    global coords
+    canvas.delete("all")
+    print(coords)
     for i in range(len(coords)-1):
-        BresenhamV4(m+coords[i][0],n+coords[i][1],m+coords[i+1][0],n+coords[i+1][1]) 
+        BresenhamV4(coords[i][0],coords[i][1],coords[i+1][0] ,coords[i+1][1])
+
+# сдвиг прямоугольника на n пикселей по горизонтали и y по вертикали
+def shift(m,n):
+    global counter,coords
+    
+    print('m = {} n = {}'.format(m,n))
+    for i in range(len(coords)):
+        coords[i][0] += m
+        coords[i][1] += n
+    drawPolygon()
+      
 # Отражение относительно оси X
 def mirrorX():
     global counter,coords
@@ -61,12 +71,15 @@ def mirrorY():
     for i in range(len(coords)-1):
         BresenhamV4(coords[i][0], canvas.winfo_height()-coords[i][1],coords[i+1][0], canvas.winfo_height()- coords[i+1][1]) 
 def scale(k=1):
-    
+    canvas.delete("all") 
     m,n = coords[0][0] , coords[0][1] # точка, относительно которой происходит сжатие расстяжение k > 1 растяг < 1 сжат.
-    for i in range(len(coords)-1):
-           BresenhamV4(round(coords[i][0]*k - m*k + m), round(coords[i][1]*k - n*k + n), round(coords[i + 1][0]*k - m*k + m), round(coords[i + 1 ][1]*k - n*k + n)) 
+    for i in range(len(coords)):
+           coords[i][0] = round(coords[i][0]*k - m*k + m)
+           coords[i][1] = round(coords[i][1]*k - n*k + n)
+    drawPolygon()
 def Turn(g):
     global counter,coords
+    
     m,n = coords[len(coords)-1][0],coords[len(coords)-1][1]
     g = radians(g)
     for i in range(len(coords)-1):
@@ -86,11 +99,34 @@ def rightBtn(event):
    print('Coords: {}'.format(coords))
    Turn(30) 
     # сброс координат  
-   coords = []
-   counter = 0 
+ #  coords = []
+ #  counter = 0 
    pass
+# ~ Смещения
+def LShift(event):
+    shift(-10,0)
+    pass
+def RShift(event):
+    shift(10,0)
+    pass
+def UShift(event):
+    shift(0,-10)
+    pass
+def DShift(event):
+    shift(0,10)
+#  Смещения ~
 
-# ~UI Функционал
+
+# ~  Скейлы
+def ZoomIn(event):
+    scale(1.1)
+def ZoomOut(event):
+    scale(0.9)
+#  Скейлы ~ 
+
+
+
+# ~UI Функционал    
 def callback(event): # метод отслеживания нажатий
     global counter,coords,var
     coords.append([int(event.x),int(event.y)])
@@ -102,6 +138,9 @@ def callback(event): # метод отслеживания нажатий
     counter += 1
 
 def clear(): # очистить холст
+    global coords,counter
+    coords = []
+    counter = 0
     canvas.delete("all") 
 # UI Функционал~
 
@@ -115,11 +154,17 @@ if __name__ == "__main__":
     counter = 0 # переменная, в которой хранится номер клика мыши
     coords = [] # координаты точек
     
-    
     # Инициализация и настройка холста
     canvas= Canvas(root, width=800, height=600,bg='white')
+    # Бинды клавиш
     canvas.bind("<Button-1>", callback)
     canvas.bind("<Button-3>", rightBtn)
+    root.bind('<a>',LShift)
+    root.bind('<d>',RShift)
+    root.bind('<w>',UShift)
+    root.bind('<s>',DShift)
+    root.bind('<e>',ZoomIn )
+    root.bind('<q>',ZoomOut)
     canvas.pack()
     # Step by step mode (animation)
     sbsm = IntVar()
