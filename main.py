@@ -2,9 +2,7 @@ from tkinter import *
 import tkinter
 from time import sleep
 from math import sin,cos,radians
-# ~ Необходимые переменные
-# Необходимые переменные ~ 
- 
+
 # ~ Дополнительные методы
 def sign(x):
     if x >= 0: return 1
@@ -41,6 +39,7 @@ def BresenhamV4(x1,y1,x2,y2): # четырёхсвязная развёртка
             else: y = y + s2
             e = e - 2*dx
     draw_dot(x,y)
+# Отрисовать многоугольник по заданным точкам
 def drawPolygon():
     global coords
     canvas.delete("all")
@@ -50,7 +49,7 @@ def drawPolygon():
 
 # сдвиг прямоугольника на n пикселей по горизонтали и y по вертикали
 def shift(m,n):
-    global counter,coords
+    global coords
     
     print('m = {} n = {}'.format(m,n))
     for i in range(len(coords)):
@@ -70,15 +69,16 @@ def mirrorY():
     for i in range(len(coords)):
         coords[i][1] = canvas.winfo_height()-coords[i][1]
     drawPolygon()
-# Скейлы
-def scale(k):
+# Скейл
+def scale(kx,ky): 
     global coords
     canvas.delete("all") 
     m,n = coords[0][0] , coords[0][1] # точка, относительно которой происходит сжатие расстяжение k > 1 растяг < 1 сжат.
     for i in range(len(coords)):
-           coords[i][0] = round(coords[i][0]*k - m*k + m)
-           coords[i][1] = round(coords[i][1]*k - n*k + n)
+           coords[i][0] = round(coords[i][0]*kx - m*kx + m)
+           coords[i][1] = round(coords[i][1]*ky - n*ky + n)
     drawPolygon()
+
 # Поворот на градус g
 def Turn(g):
     global coords
@@ -107,9 +107,9 @@ def DShift(event):
 
 # ~  Скейлы
 def ZoomIn(event):
-    scale(1.1)
+    scale(1.1,1.1)
 def ZoomOut(event):
-    scale(0.9)
+    scale(0.9,0.9)
 #  Скейлы ~ 
 def counterclock_wise(event):
     Turn(10)
