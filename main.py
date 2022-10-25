@@ -60,48 +60,36 @@ def shift(m,n):
       
 # Отражение относительно оси X
 def mirrorX():
-    global counter,coords
-   
-    for i in range(len(coords)-1):
-        BresenhamV4(canvas.winfo_width()- coords[i][0], coords[i][1],canvas.winfo_width() -coords[i+1][0], coords[i+1][1]) 
+    global coords
+    for i in range(len(coords)):
+       coords[i][0] = canvas.winfo_width()- coords[i][0]
+    drawPolygon()
  # Отражение относительно оси Y  
 def mirrorY():
-    global counter,coords
-   
-    for i in range(len(coords)-1):
-        BresenhamV4(coords[i][0], canvas.winfo_height()-coords[i][1],coords[i+1][0], canvas.winfo_height()- coords[i+1][1]) 
-def scale(k=1):
+    global coords
+    for i in range(len(coords)):
+        coords[i][1] = canvas.winfo_height()-coords[i][1]
+    drawPolygon()
+# Скейлы
+def scale(k):
+    global coords
     canvas.delete("all") 
     m,n = coords[0][0] , coords[0][1] # точка, относительно которой происходит сжатие расстяжение k > 1 растяг < 1 сжат.
     for i in range(len(coords)):
            coords[i][0] = round(coords[i][0]*k - m*k + m)
            coords[i][1] = round(coords[i][1]*k - n*k + n)
     drawPolygon()
+# Поворот на градус g
 def Turn(g):
-    global counter,coords
-    
+    global coords
     m,n = coords[len(coords)-1][0],coords[len(coords)-1][1]
     g = radians(g)
-    for i in range(len(coords)-1):
-           
-           x1 = round(coords[i][0]*cos(g) - coords[i][1]*sin(g) - m*cos(g) + m + n*sin(g))
-           y1 = round(coords[i][0] * sin(g) + coords[i][1]*cos(g) - m*sin(g) - n*cos(g) + n)
-           x2 = round(coords[i+1][0]*cos(g) - coords[i+1][1]*sin(g) - m*cos(g) + m + n*sin(g))
-           y2 = round(coords[i+1][0] * sin(g) + coords[i+1][1]*cos(g) - m*sin(g) - n*cos(g) + n)
-           print([x1,y1,x2,y2]) 
-           BresenhamV4(x1,y1,x2,y2) 
-    pass        
+    for i in range(len(coords)):
+        coords[i][0] = round(coords[i][0]*cos(g) - coords[i][1]*sin(g) - m*cos(g) + n*sin(g) + m)  
+        coords[i][1] = round(coords[i][0] * sin(g) + coords[i][1]*cos(g) - m*sin(g) - n*cos(g) + n) 
+    drawPolygon()        
 #  Алгоритмы отрисовки ~
 
-def rightBtn(event):
-   global coords,counter
-   # P.S сделать крутой выбор
-   print('Coords: {}'.format(coords))
-   Turn(30) 
-    # сброс координат  
- #  coords = []
- #  counter = 0 
-   pass
 # ~ Смещения
 def LShift(event):
     shift(-10,0)
@@ -123,7 +111,11 @@ def ZoomIn(event):
 def ZoomOut(event):
     scale(0.9)
 #  Скейлы ~ 
-
+def counterclock_wise(event):
+    Turn(10)
+def clockwise(event):
+    print('clock')
+    Turn(-10)
 
 
 # ~UI Функционал    
@@ -158,13 +150,15 @@ if __name__ == "__main__":
     canvas= Canvas(root, width=800, height=600,bg='white')
     # Бинды клавиш
     canvas.bind("<Button-1>", callback)
-    canvas.bind("<Button-3>", rightBtn)
     root.bind('<a>',LShift)
     root.bind('<d>',RShift)
     root.bind('<w>',UShift)
     root.bind('<s>',DShift)
     root.bind('<e>',ZoomIn )
     root.bind('<q>',ZoomOut)
+
+    root.bind('<Left>',counterclock_wise)
+    root.bind('<Right>',clockwise)
     canvas.pack()
     # Step by step mode (animation)
     sbsm = IntVar()
@@ -173,8 +167,11 @@ if __name__ == "__main__":
                       onvalue = 1,
                       offvalue = 0)
     sbsmCBtn.pack()
-    # Вспомогательные многоугольники
-   
+    # Кнопки для отзеркаливания
+    mirX = tkinter.Button(root,text='Отзеркалить по X',command=mirrorX)
+    mirY = tkinter.Button(root,text='Отзеркалить по Y',command=mirrorY)
+    mirX.pack()
+    mirY.pack()
 
     # Кнопка очистки очистка холста
     clsBtn = tkinter.Button(root,text='Очистить холст',command=clear)
