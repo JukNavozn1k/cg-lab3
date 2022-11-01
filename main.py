@@ -136,6 +136,43 @@ def clear(): # очистить холст
     canvas.delete("all") 
 # UI Функционал~
 
+# ~ DVD Animation
+def anim():
+   global resetIterations,iterations,coords,direction,root
+   if direction == 1:
+        for i in range(100):
+            shift(1,1)
+            root.update()
+        direction += 1
+   elif direction == 2:
+        for i in range(100):
+            shift(1,-1)
+            root.update()
+        direction += 1
+   elif direction == 3:
+        for i in range(100):
+            shift(-1,-1)
+            root.update()
+        direction += 1
+   elif direction == 4:
+        for i in range(100):
+            shift(-1,1)
+            root.update()
+        direction =  1
+   # рекурсивная функция 
+   iterations
+   resetIterations
+   if iterations > 0:
+        iterations = iterations -  1
+        anim()
+   if iterations == 0:
+        iterations = resetIterations
+    
+
+
+   
+# DVD Animation ~
+
 if __name__ == "__main__":
     # Инициализация и базовая настройки окна
     root = Tk()
@@ -167,6 +204,12 @@ if __name__ == "__main__":
                       onvalue = 1,
                       offvalue = 0)
     sbsmCBtn.pack()
+    # Кнопка анимации
+    iterations = 7 # количество повторений анимаций (полная анимация занимает 4 итерации)
+    resetIterations = iterations # буфферная переменная нужна для восстановления итераций
+    dvdBtn = tkinter.Button(root,text='DVD Mode',command=anim)
+    dvdBtn.pack()
+    direction = 1
     # Кнопки для отзеркаливания
     mirX = tkinter.Button(root,text='Отзеркалить по X',command=mirrorX)
     mirY = tkinter.Button(root,text='Отзеркалить по Y',command=mirrorY)
@@ -177,3 +220,5 @@ if __name__ == "__main__":
     clsBtn = tkinter.Button(root,text='Очистить холст',command=clear)
     clsBtn.pack()
     root.mainloop()
+
+  
